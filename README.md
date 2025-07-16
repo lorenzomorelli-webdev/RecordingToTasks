@@ -32,6 +32,34 @@ Un tool Python che trasforma le registrazioni audio/video di meeting in trascriz
 
 ### Installazione
 
+#### Opzione 1: Setup Automatico (Consigliato)
+
+1. **Clona il repository:**
+   ```bash
+   git clone <repository-url>
+   cd RecordingToTasks
+   ```
+
+2. **Esegui lo script di setup:**
+   ```bash
+   ./setup.sh
+   ```
+   
+   Lo script installerà automaticamente:
+   - ffmpeg (se non presente)
+   - L'ambiente virtuale Python
+   - Tutte le dipendenze necessarie
+   - Creerà il file `.env` dal template
+
+3. **Configura la tua API key:**
+   
+   Modifica il file `.env` inserendo la tua API key di OpenAI:
+   ```
+   OPENAI_API_KEY=sk-your-actual-api-key-here
+   ```
+
+#### Opzione 2: Setup Manuale
+
 1. **Clona il repository:**
    ```bash
    git clone <repository-url>
