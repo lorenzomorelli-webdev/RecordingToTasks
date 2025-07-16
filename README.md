@@ -95,7 +95,23 @@ python main.py --help
 
 ## 📖 Utilizzo
 
-### Comando base
+### 🖥️ Interfaccia Grafica (Consigliata)
+
+Per un'esperienza user-friendly con drag & drop:
+
+```bash
+python start_gui.py
+```
+
+**Funzionalità GUI:**
+- 🎬 **Drag & Drop**: Trascina file audio/video direttamente nell'interfaccia
+- 📂 **File Browser**: Selezione file tramite finestra di dialogo
+- ⚙️ **Configurazione Modelli**: Scegli tra gpt-4o-mini, gpt-3.5-turbo, gpt-4o
+- 💰 **Stima Costi**: Calcolo automatico dei costi prima dell'elaborazione
+- 📊 **Monitoraggio**: Progress bar e log in tempo reale
+- 🔑 **Gestione API Key**: Configurazione semplificata tramite interfaccia
+
+### 📟 Linea di Comando
 
 ```bash
 python main.py /path/to/your/recording.mp4
