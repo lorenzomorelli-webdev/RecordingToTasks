@@ -1,6 +1,6 @@
 # Recording to Tasks
 
-Un tool Python che trasforma le registrazioni audio/video di meeting in trascrizioni e to-do list strutturate utilizzando le API di OpenAI (Whisper per la trascrizione e GPT per l'analisi).
+Un tool Python da linea di comando che trasforma le registrazioni audio/video di meeting in trascrizioni e to-do list strutturate utilizzando le API di OpenAI (Whisper per la trascrizione e GPT per l'analisi).
 
 ## 🚀 Funzionalità
 
@@ -11,6 +11,7 @@ Un tool Python che trasforma le registrazioni audio/video di meeting in trascriz
 - **Elaborazione parallela** per velocizzare la trascrizione
 - **Retry automatico** in caso di errori API
 - **Timestamp precisi** per ogni sezione
+- **Output strutturato** in formato Markdown
 
 ## 🛠️ Setup e Installazione
 
@@ -93,25 +94,14 @@ Un tool Python che trasforma le registrazioni audio/video di meeting in trascriz
 python main.py --help
 ```
 
-## 📖 Utilizzo
-
-### 🖥️ Interfaccia Grafica (Consigliata)
-
-Per un'esperienza user-friendly con drag & drop:
-
+Oppure esegui il test di setup:
 ```bash
-python start_gui.py
+python test_setup.py
 ```
 
-**Funzionalità GUI:**
-- 🎬 **Drag & Drop**: Trascina file audio/video direttamente nell'interfaccia
-- 📂 **File Browser**: Selezione file tramite finestra di dialogo
-- ⚙️ **Configurazione Modelli**: Scegli tra gpt-4o-mini, gpt-3.5-turbo, gpt-4o
-- 💰 **Stima Costi**: Calcolo automatico dei costi prima dell'elaborazione
-- 📊 **Monitoraggio**: Progress bar e log in tempo reale
-- 🔑 **Gestione API Key**: Configurazione semplificata tramite interfaccia
+## 📖 Utilizzo
 
-### 📟 Linea di Comando
+### Comando base
 
 ```bash
 python main.py /path/to/your/recording.mp4
@@ -126,20 +116,31 @@ python main.py meeting_2024_01_15.mp4
 # Trascrivi un file audio
 python main.py call_with_client.wav
 
-# Elabora più file
+# Elabora più file in sequenza
 python main.py file1.mp4 file2.wav file3.m4a
+
+# Mostra aiuto
+python main.py --help
 ```
+
+### Formati supportati
+
+**Audio:** `.wav`, `.mp3`, `.m4a`, `.flac`, `.aac`, `.ogg`, `.wma`
+**Video:** `.mp4`, `.mov`, `.avi`, `.mkv`, `.wmv`, `.flv`, `.webm`, `.m4v`
 
 ### Output
 
 Il tool genererà due file nella cartella `output/`:
 
 1. **`filename_transcription.txt`** - Trascrizione completa con timestamp
-2. **`filename_tasks.md`** - To-do list strutturata con:
-   - Action items e responsabili
-   - Decisioni chiave prese
-   - Scadenze e date importanti
-   - Riassunto della discussione
+2. **`filename_tasks.md`** - Analisi strutturata con:
+   - **Riassunto esecutivo**
+   - **Partecipanti** (se identificabili)
+   - **Punti chiave discussi**
+   - **Decisioni prese**
+   - **Action items / To-do list** con responsabili e scadenze
+   - **Prossimi passi**
+   - **Note aggiuntive**
 
 ## ⚙️ Configurazione
 
@@ -152,7 +153,7 @@ OPENAI_ORG_ID=your_org_id_here  # Opzionale
 
 # Model Selection
 WHISPER_MODEL=whisper-1          # Modello per trascrizione
-CHAT_MODEL=gpt-3.5-turbo        # Modello per analisi (o gpt-4-turbo)
+CHAT_MODEL=gpt-4o-mini          # Modello per analisi
 
 # Processing Configuration
 MAX_RETRIES=3                    # Retry in caso di errore
@@ -166,8 +167,9 @@ SIZE_LIMIT_MB=20                # Limite dimensione file (MB)
 - `whisper-1` - Modello standard, ottimo rapporto qualità/prezzo
 
 **Per l'analisi:**
-- `gpt-3.5-turbo` - Veloce ed economico, qualità 7-8/10
-- `gpt-4-turbo` - Più preciso ma costoso, qualità 9-10/10
+- `gpt-4o-mini` - Veloce ed economico, qualità alta
+- `gpt-3.5-turbo` - Alternativa economica
+- `gpt-4o` - Massima precisione ma più costoso
 
 ## 💰 Costi Stimati
 
@@ -176,12 +178,20 @@ I costi dipendono dalla lunghezza delle registrazioni:
 **Whisper (trascrizione):**
 - $0.006 per minuto di audio
 
-**GPT-3.5-turbo (analisi):**
+**GPT-4o-mini (analisi):**
 - ~$0.001-0.003 per meeting di 1 ora
 
 **Esempio:** Meeting di 1 ora = ~$0.36 + $0.002 = **~$0.37 totale**
 
-## 🔧 Sviluppo
+## 🔧 Gestione File Grandi
+
+Il tool gestisce automaticamente file di grandi dimensioni:
+
+- **Chunking automatico**: File > 20MB vengono divisi in chunk
+- **Elaborazione parallela**: Più chunk processati contemporaneamente
+- **Ricostruzione timeline**: I timestamp vengono preservati nell'output finale
+
+## 🛠️ Sviluppo
 
 ### Struttura del progetto
 
@@ -189,14 +199,22 @@ I costi dipendono dalla lunghezza delle registrazioni:
 RecordingToTasks/
 ├── main.py              # Script principale
 ├── requirements.txt     # Dipendenze Python
-├── .env                 # Configurazione (non committato)
-├── env.example          # Template configurazione
+├── setup.sh            # Script di installazione automatica
+├── test_setup.py       # Test di verifica setup
+├── .env                # Configurazione (non committato)
+├── env.example         # Template configurazione
 ├── README.md           # Documentazione
 ├── .gitignore          # File da ignorare
 ├── venv/               # Ambiente virtuale
 ├── temp/               # File temporanei
 └── output/             # File di output
 ```
+
+### Dipendenze
+
+- **openai**: Client per le API di OpenAI
+- **python-dotenv**: Gestione variabili d'ambiente
+- **ffmpeg**: Elaborazione audio/video (dipendenza esterna)
 
 ### Contribuire
 
@@ -230,9 +248,14 @@ cat .env
 - Il tool gestisce automaticamente file grandi
 - Aumenta `SIZE_LIMIT_MB` in `.env` se necessario
 
+**Errori di trascrizione**
+- Il tool riprova automaticamente con backoff esponenziale
+- Controlla la connessione internet
+- Verifica i limiti di rate dell'API OpenAI
+
 ### Debug
 
-Attiva il logging dettagliato modificando il file `main.py`:
+Per debug più dettagliato, modifica temporaneamente il file `main.py` aggiungendo:
 ```python
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -248,4 +271,4 @@ Per bug report o feature request, apri una issue su GitHub.
 
 ---
 
-**Nota:** Questo tool è ottimizzato per meeting in italiano e inglese. Per altre lingue, potrebbe essere necessario ajustare i prompt di analisi. 
+**Nota:** Questo tool è ottimizzato per meeting in italiano e inglese. Per altre lingue, potrebbe essere necessario modificare i prompt di analisi nel file `main.py`. 
